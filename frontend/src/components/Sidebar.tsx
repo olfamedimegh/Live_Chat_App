@@ -21,7 +21,7 @@ import {
 import { useMutation } from "@apollo/client"
 import { LOGOUT_USER } from "../graphql/mutations/Logout"
 
-const useStyles = createStyles((theme :any) => {
+const useStyles = createStyles((theme) => {
   return {
     link: {
       width: rem(50),

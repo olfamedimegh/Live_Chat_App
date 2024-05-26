@@ -52,6 +52,12 @@ const pubSub = new RedisPubSub({
             }
             return { user };
           },
+          context: ({ req, res, connection }) => {
+            if (connection) {
+              return { req, res, user: connection.context.user, pubSub }; // Injecting pubSub into the context
+            }
+            return { req, res };
+          }
         };
       },
     }),
