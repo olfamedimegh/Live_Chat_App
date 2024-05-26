@@ -19,6 +19,16 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type Chatroom = {
+  __typename?: 'Chatroom';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  messages?: Maybe<Array<Message>>;
+  name?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  users?: Maybe<Array<User>>;
+};
+
 export type LoginDto = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -29,13 +39,46 @@ export type LoginResponse = {
   user: User;
 };
 
+export type Message = {
+  __typename?: 'Message';
+  chatroom?: Maybe<Chatroom>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<User>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addUsersToChatroom: Chatroom;
+  createChatroom: Chatroom;
+  deleteChatroom: Scalars['String']['output'];
   login: LoginResponse;
   logout: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
   register: RegisterResponse;
+  sendMessage: Message;
   updateProfile: User;
+  userStartedTypingMutation: User;
+  userStoppedTypingMutation: User;
+};
+
+
+export type MutationAddUsersToChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userIds: Array<Scalars['Float']['input']>;
+};
+
+
+export type MutationCreateChatroomArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
 };
 
 
@@ -49,14 +92,55 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationSendMessageArgs = {
+  chatroomId: Scalars['Float']['input'];
+  content: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['Upload']['input']>;
+};
+
+
 export type MutationUpdateProfileArgs = {
   file?: InputMaybe<Scalars['Upload']['input']>;
   fullname: Scalars['String']['input'];
 };
 
+
+export type MutationUserStartedTypingMutationArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationUserStoppedTypingMutationArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getChatroomsForUser: Array<Chatroom>;
+  getMessagesForChatroom: Array<Message>;
+  getUsersOfChatroom: Array<User>;
   hello: Scalars['String']['output'];
+  searchUsers: Array<User>;
+};
+
+
+export type QueryGetChatroomsForUserArgs = {
+  userId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetMessagesForChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetUsersOfChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type QuerySearchUsersArgs = {
+  fullname: Scalars['String']['input'];
 };
 
 export type RegisterDto = {
@@ -69,6 +153,30 @@ export type RegisterDto = {
 export type RegisterResponse = {
   __typename?: 'RegisterResponse';
   user?: Maybe<User>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  newMessage?: Maybe<Message>;
+  userStartedTyping?: Maybe<User>;
+  userStoppedTyping?: Maybe<User>;
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type SubscriptionUserStartedTypingArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
+
+export type SubscriptionUserStoppedTypingArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
 };
 
 export type User = {
@@ -95,6 +203,16 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type Chatroom = {
+  __typename?: 'Chatroom';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  messages?: Maybe<Array<Message>>;
+  name?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  users?: Maybe<Array<User>>;
+};
+
 export type LoginDto = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -105,13 +223,46 @@ export type LoginResponse = {
   user: User;
 };
 
+export type Message = {
+  __typename?: 'Message';
+  chatroom?: Maybe<Chatroom>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<User>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addUsersToChatroom: Chatroom;
+  createChatroom: Chatroom;
+  deleteChatroom: Scalars['String']['output'];
   login: LoginResponse;
   logout: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
   register: RegisterResponse;
+  sendMessage: Message;
   updateProfile: User;
+  userStartedTypingMutation: User;
+  userStoppedTypingMutation: User;
+};
+
+
+export type MutationAddUsersToChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userIds: Array<Scalars['Float']['input']>;
+};
+
+
+export type MutationCreateChatroomArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
 };
 
 
@@ -125,14 +276,55 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationSendMessageArgs = {
+  chatroomId: Scalars['Float']['input'];
+  content: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['Upload']['input']>;
+};
+
+
 export type MutationUpdateProfileArgs = {
   file?: InputMaybe<Scalars['Upload']['input']>;
   fullname: Scalars['String']['input'];
 };
 
+
+export type MutationUserStartedTypingMutationArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationUserStoppedTypingMutationArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getChatroomsForUser: Array<Chatroom>;
+  getMessagesForChatroom: Array<Message>;
+  getUsersOfChatroom: Array<User>;
   hello: Scalars['String']['output'];
+  searchUsers: Array<User>;
+};
+
+
+export type QueryGetChatroomsForUserArgs = {
+  userId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetMessagesForChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetUsersOfChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type QuerySearchUsersArgs = {
+  fullname: Scalars['String']['input'];
 };
 
 export type RegisterDto = {
@@ -145,6 +337,30 @@ export type RegisterDto = {
 export type RegisterResponse = {
   __typename?: 'RegisterResponse';
   user?: Maybe<User>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  newMessage?: Maybe<Message>;
+  userStartedTyping?: Maybe<User>;
+  userStoppedTyping?: Maybe<User>;
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type SubscriptionUserStartedTypingArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
+
+export type SubscriptionUserStoppedTypingArgs = {
+  chatroomId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
 };
 
 export type User = {

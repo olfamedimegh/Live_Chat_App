@@ -1,280 +1,180 @@
+import React from "react"
+
 import {
-    Button,
-    Col,
-    Grid,
-    Group,
-    Modal,
-    Paper,
-    Text,
-    TextInput,
-  } from "@mantine/core"
-  import React, { useState } from "react"
-  import { useGeneralStore } from "../stores/generalStore"
-  import { useForm } from "@mantine/form"
-  import { useUserStore } from "../stores/userStore"
-  import { GraphQLErrorExtensions } from "graphql"
-  import { useMutation } from "@apollo/client"
-  import { LoginUserMutation, RegisterUserMutation } from "../gql/graphql"
-  import { REGISTER_USER } from "../graphql/mutations/Register"
-  import { LOGIN_USER } from "../graphql/mutations/Login"
-  function AuthOverlay() {
-    const isLoginModalOpen = useGeneralStore((state) => state.isLoginModalOpen)
-    const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal)
-    const [isRegister, setIsRegister] = useState(true)
-    const toggleForm = () => {
-      setIsRegister(!isRegister)
+  Button,
+  Card,
+  Text,
+  Flex,
+  Group,
+  Loader,
+  ScrollArea,
+} from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
+import { IconPlus, IconX } from "@tabler/icons-react"
+import { useGeneralStore } from "../stores/generalStore"
+import { useUserStore } from "../stores/userStore"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { GetChatroomsForUserQuery } from "../gql/graphql"
+import { GET_CHATROOMS_FOR_USER } from "../graphql/queries/GetChatRoomsForUser.ts"
+import { DELETE_CHATROOM } from "../graphql/mutations/DeleteChatroom"
+import { useMutation, useQuery } from "@apollo/client"
+import OverlappingAvatars from "./OverlappingAvatars"
+function RoomList() {
+  const toggleCreateRoomModal = useGeneralStore(
+    (state) => state.toggleCreateRoomModal
+  )
+  const userId = useUserStore((state) => state.id)
+
+  const { data, loading, error } = useQuery<GetChatroomsForUserQuery>(
+    GET_CHATROOMS_FOR_USER,
+    {
+      variables: {
+        userId: userId,
+      },
     }
-  
-    const Register = () => {
-      const form = useForm({
-        initialValues: {
-          fullname: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        },
-        validate: {
-          fullname: (value: string) =>
-            value.trim().length >= 3
-              ? null
-              : "Username must be at least 3 characters",
-          email: (value: string) =>
-            value.includes("@") ? null : "Invalid email",
-          password: (value: string) =>
-            value.trim().length >= 3
-              ? null
-              : "Password must be at least 3 characters",
-          confirmPassword: (value: string, values) =>
-            value.trim().length >= 3 && value === values.password
-              ? null
-              : "Passwords do not match",
-        },
-      })
-      const setUser = useUserStore((state) => state.setUser)
-      const setIsLoginOpen = useGeneralStore((state) => state.toggleLoginModal)
-  
-      const [errors, setErrors] = React.useState<GraphQLErrorExtensions>({})
-  
-      const [registerUser, { loading }] =
-        useMutation<RegisterUserMutation>(REGISTER_USER)
-  
-      const handleRegister = async () => {
-        setErrors({})
-  
-        await registerUser({
-          variables: {
-            email: form.values.email,
-            password: form.values.password,
-            fullname: form.values.fullname,
-            confirmPassword: form.values.confirmPassword,
-          },
-          onCompleted: (data) => {
-            setErrors({})
-            if (data?.register.user)
-              setUser({
-                id: data?.register.user.id,
-                email: data?.register.user.email,
-                fullname: data?.register.user.fullname,
-              })
-            setIsLoginOpen()
-          },
-        }).catch((err) => {
-          console.log(err.graphQLErrors, "ERROR")
-          setErrors(err.graphQLErrors[0].extensions)
-          useGeneralStore.setState({ isLoginModalOpen: true })
-        })
-      }
-  
-      return (
-        <Paper>
-          <Text align="center" size="xl">
-            Register
-          </Text>
-  
-          <form
-            onSubmit={form.onSubmit(() => {
-              handleRegister()
-            })}
-          >
-            <Grid mt={20}>
-              <Col span={12} md={6}>
-                <TextInput
-                  label="Fullname"
-                  placeholder="Choose a full name"
-                  {...form.getInputProps("fullname")}
-                  error={form.errors.username || (errors?.username as string)}
-                />
-              </Col>
-  
-              <Col span={12} md={6}>
-                <TextInput
-                  autoComplete="off"
-                  label="Email"
-                  placeholder="Enter your email"
-                  {...form.getInputProps("email")}
-                  error={form.errors.email || (errors?.email as string)}
-                />
-              </Col>
-              <Col span={12} md={6}>
-                <TextInput
-                  autoComplete="off"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter your password"
-                  {...form.getInputProps("password")}
-                  error={form.errors.password || (errors?.password as string)}
-                />
-              </Col>
-              <Col span={12} md={6}>
-                <TextInput
-                  {...form.getInputProps("confirmPassword")}
-                  error={
-                    form.errors.confirmPassword ||
-                    (errors?.confirmPassword as string)
-                  }
-                  autoComplete="off"
-                  label="Confirm Password"
-                  type="password"
-                  placeholder="Confirm your password"
-                />
-              </Col>
-  
-              <Col span={12}>
-                <Button variant="link" onClick={toggleForm} pl={0}>
-                  Already registered? Login here
-                </Button>
-              </Col>
-            </Grid>
-  
-            <Group position="left" mt={20}>
-              <Button
-                variant="outline"
-                color="blue"
-                type="submit"
-                disabled={loading}
-              >
-                Register
-              </Button>
-              <Button variant="outline" color="red">
-                Cancel
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      )
-    }
-  
-    const Login = () => {
-      const [loginUser, { loading }] =
-        useMutation<LoginUserMutation>(LOGIN_USER)
-      const setUser = useUserStore((state) => state.setUser)
-      const setIsLoginOpen = useGeneralStore((state) => state.toggleLoginModal)
-      const [errors, setErrors] = React.useState<GraphQLErrorExtensions>({})
-      const [invalidCredentials, setInvalidCredentials] = React.useState("")
-      const form = useForm({
-        initialValues: {
-          email: "",
-          password: "",
-        },
-        validate: {
-          email: (value: string) =>
-            value.includes("@") ? null : "Invalid email",
-          password: (value: string) =>
-            value.trim().length >= 3
-              ? null
-              : "Password must be at least 3 characters",
-        },
-      })
-  
-      const handleLogin = async () => {
-        await loginUser({
-          variables: {
-            email: form.values.email,
-            password: form.values.password,
-          },
-          onCompleted: (data) => {
-            setErrors({})
-            if (data?.login.user) {
-              setUser({
-                id: data?.login.user.id,
-                email: data?.login.user.email,
-                fullname: data?.login.user.fullname,
-                avatarUrl: data?.login.user.avatarUrl,
-              })
-              setIsLoginOpen()
-            }
-          },
-        }).catch((err) => {
-          setErrors(err.graphQLErrors[0].extensions)
-          if (err.graphQLErrors[0].extensions?.invalidCredentials)
-            setInvalidCredentials(
-              err.graphQLErrors[0].extensions.invalidCredentials
-            )
-          useGeneralStore.setState({ isLoginModalOpen: true })
-        })
-      }
-      return (
-        <Paper>
-          <Text align="center" size="xl">
-            Login
-          </Text>
-          <form
-            onSubmit={form.onSubmit(() => {
-              handleLogin()
-            })}
-          >
-            <Grid style={{ marginTop: 20 }}>
-              <Col span={12} md={6}>
-                <TextInput
-                  autoComplete="off"
-                  label="Email"
-                  placeholder="Enter your email"
-                  {...form.getInputProps("email")}
-                  error={form.errors.email || (errors?.email as string)}
-                />
-              </Col>
-              <Col span={12} md={6}>
-                <TextInput
-                  autoComplete="off"
-                  label="Password"
-                  type="password"
-                  placeholder="Enter your password"
-                  {...form.getInputProps("password")}
-                  error={form.errors.password || (errors?.password as string)}
-                />
-              </Col>
-              {/* Not registered yet? then render register component. use something like a text, not a button */}
-              <Col span={12} md={6}>
-                <Text>{invalidCredentials}</Text>
-              </Col>
-              <Col span={12}>
-                <Button pl={0} variant="link" onClick={toggleForm}>
-                  Not registered yet? Register here
-                </Button>
-              </Col>
-            </Grid>
-            {/* buttons: login or cancel */}
-            <Group position="left" style={{ marginTop: 20 }}>
-              <Button
-                variant="outline"
-                color="blue"
-                type="submit"
-                disabled={loading}
-              >
-                Login
-              </Button>
-              <Button variant="outline" color="red" onClick={toggleLoginModal}>
-                Cancel
-              </Button>
-            </Group>
-          </form>
-        </Paper>
-      )
-    }
-    return (
-      <Modal centered opened={isLoginModalOpen} onClose={toggleLoginModal}>
-        {isRegister ? <Register /> : <Login />}
-      </Modal>
-    )
+  )
+  const isSmallDevice = useMediaQuery("(max-width: 768px)")
+  const defaultTextStyles: React.CSSProperties = {
+    textOverflow: isSmallDevice ? "unset" : "ellipsis",
+    whiteSpace: isSmallDevice ? "unset" : "nowrap",
+    overflow: isSmallDevice ? "unset" : "hidden",
   }
-  export default AuthOverlay
+
+  const defaultFlexStyles: React.CSSProperties = {
+    maxWidth: isSmallDevice ? "unset" : "200px",
+  }
+
+  const [activeRoomId, setActiveRoomId] = React.useState<number | null>(
+    parseInt(useParams<{ id: string }>().id || "0")
+  )
+  const navigate = useNavigate()
+
+  const [deleteChatroom] = useMutation(DELETE_CHATROOM, {
+    variables: {
+      chatroomId: activeRoomId,
+    },
+    refetchQueries: [
+      {
+        query: GET_CHATROOMS_FOR_USER,
+        variables: {
+          userId: userId,
+        },
+      },
+    ],
+    onCompleted: () => {
+      navigate("/")
+    },
+  })
+  const isMediumDevice = useMediaQuery("(max-width: 992px)")
+  return (
+    <Flex direction={"row"} h={"100vh"} ml={"100px"}>
+      <Card shadow="md" p={0}>
+        <Flex direction="column" align="start">
+          <Group position="apart" w={"100%"} mb={"md"} mt={"md"}>
+            <Button
+              onClick={toggleCreateRoomModal}
+              variant="light"
+              leftIcon={<IconPlus />}
+            >
+              Create a room
+            </Button>
+          </Group>
+          <ScrollArea
+            h={"83vh"}
+            w={isMediumDevice ? "calc(100vw - 100px)" : "450px"}
+          >
+            <Flex direction={"column"}>
+              <Flex justify="center" align="center" h="100%" mih={"75px"}>
+                {loading && (
+                  <Flex align="center">
+                    <Loader mr={"md"} />
+                    <Text c="dimmed" italic>
+                      Loading...
+                    </Text>
+                  </Flex>
+                )}
+              </Flex>
+              {data?.getChatroomsForUser.map((chatroom) => (
+                <Link
+                  style={{
+                    transition: "background-color 0.3s",
+                    cursor: "pointer",
+                  }}
+                  to={`/chatrooms/${chatroom.id}`}
+                  key={chatroom.id}
+                  onClick={() => setActiveRoomId(parseInt(chatroom.id || "0"))}
+                >
+                  <Card
+                    style={
+                      activeRoomId === parseInt(chatroom.id || "0")
+                        ? { backgroundColor: "#f0f1f1" }
+                        : undefined
+                    }
+                    mih={120}
+                    py={"md"}
+                    withBorder
+                    shadow="md"
+                  >
+                    <Flex justify={"space-around"}>
+                      {chatroom.users && (
+                        <Flex align={"center"}>
+                          <OverlappingAvatars users={chatroom.users} />
+                        </Flex>
+                      )}
+                      {chatroom.messages && chatroom.messages.length > 0 ? (
+                        <Flex
+                          style={defaultFlexStyles}
+                          direction={"column"}
+                          align={"start"}
+                          w={"100%"}
+                          h="100%"
+                        >
+                          <Flex direction={"column"}>
+                            <Text size="lg" style={defaultTextStyles}>
+                              {chatroom.name}
+                            </Text>
+                            <Text style={defaultTextStyles}>
+                              {chatroom.messages[0].content}
+                            </Text>
+                            <Text c="dimmed" style={defaultTextStyles}>
+                              {new Date(
+                                chatroom.messages[0].createdAt
+                              ).toLocaleString()}
+                            </Text>
+                          </Flex>
+                        </Flex>
+                      ) : (
+                        <Flex align="center" justify={"center"}>
+                          <Text italic c="dimmed">
+                            No Messages
+                          </Text>
+                        </Flex>
+                      )}
+                      {chatroom?.users && chatroom.users[0].id === userId && (
+                        <Flex h="100%" align="end" justify={"end"}>
+                          <Button
+                            p={0}
+                            variant="light"
+                            color="red"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              deleteChatroom()
+                            }}
+                          >
+                            <IconX />
+                          </Button>
+                        </Flex>
+                      )}
+                    </Flex>
+                  </Card>
+                </Link>
+              ))}
+            </Flex>
+          </ScrollArea>
+        </Flex>
+      </Card>
+    </Flex>
+  )
+}
+
+export default RoomList
