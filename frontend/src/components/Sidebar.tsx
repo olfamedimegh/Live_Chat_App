@@ -101,7 +101,7 @@ function Sidebar() {
   const setUser = useUserStore((state) => state.setUser)
 
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal)
-  const [logoutUser, { loading, error }] = useMutation(LOGOUT_USER, {
+  const [logoutUser] = useMutation(LOGOUT_USER, {
     onCompleted: () => {
       toggleLoginModal()
     },

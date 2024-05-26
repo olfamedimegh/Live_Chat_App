@@ -81,3 +81,7 @@ export type User = {
   password?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
+
+export type RegisterUserMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterResponse', user?: { __typename?: 'User', id?: number | null, fullname: string, email: string } | null } };
+
+export type LoginUserMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', user: { __typename?: 'User', email: string, id?: number | null, fullname: string, avatarUrl?: string | null } } };

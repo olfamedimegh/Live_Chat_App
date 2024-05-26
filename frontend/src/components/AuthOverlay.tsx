@@ -165,7 +165,7 @@ import {
     }
   
     const Login = () => {
-      const [loginUser, { loading, error, data }] =
+      const [loginUser, { loading }] =
         useMutation<LoginUserMutation>(LOGIN_USER)
       const setUser = useUserStore((state) => state.setUser)
       const setIsLoginOpen = useGeneralStore((state) => state.toggleLoginModal)
