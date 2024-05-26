@@ -17,6 +17,7 @@ import {
   import { LoginUserMutation, RegisterUserMutation } from "../gql/graphql"
   import { REGISTER_USER } from "../graphql/mutations/Register"
   import { LOGIN_USER } from "../graphql/mutations/Login"
+  
   function AuthOverlay() {
     const isLoginModalOpen = useGeneralStore((state) => state.isLoginModalOpen)
     const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal)
