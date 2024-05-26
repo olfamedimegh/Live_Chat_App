@@ -7,7 +7,7 @@ export class TokenService {
     constructor(private configService: ConfigService) {}
 
     extractToken(connectionParams: any): string | null {
-        return connectionParams?.Authorization || null;
+        return connectionParams?.token || null;
     }
 
     validateToken(token: string): any {

@@ -48,33 +48,35 @@ const wsLink = new WebSocketLink({
   },
 })
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-  for (const err of graphQLErrors) {
-    if (err.extensions.code === "UNAUTHENTICATED" && retryCount < maxRetry) {
-      retryCount++
-      return new Observable((observer) => {
-        refreshToken(client)
-          .then((token) => {
-            console.log("token", token)
-            operation.setContext((previousContext: any) => ({
-              headers: {
-                ...previousContext.headers,
-                authorization: token,
-              },
-            }))
-            const forward$ = forward(operation)
-            forward$.subscribe(observer)
-          })
-          .catch((error) => observer.error(error))
-      })
-    }
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      if (err.extensions.code === "UNAUTHENTICATED" && retryCount < maxRetry) {
+        retryCount++
+        return new Observable((observer) => {
+          refreshToken(client)
+            .then((token) => {
+              console.log("token", token)
+              operation.setContext((previousContext: any) => ({
+                headers: {
+                  ...previousContext.headers,
+                  authorization: token,
+                },
+              }))
+              const forward$ = forward(operation)
+              forward$.subscribe(observer)
+            })
+            .catch((error) => observer.error(error))
+        })
+      }
 
-    if (err.message === "Refresh token not found") {
-      console.log("refresh token not found!")
-      useUserStore.setState({
-        id: undefined,
-        fullname: "",
-        email: "",
-      })
+      if (err.message === "Refresh token not found") {
+        console.log("refresh token not found!")
+        useUserStore.setState({
+          id: undefined,
+          fullname: "",
+          email: "",
+        })
+      }
     }
   }
 })
