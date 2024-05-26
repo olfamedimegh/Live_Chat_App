@@ -5,7 +5,7 @@ import { LoginDto, RegisterDto } from './dto';
 import { BadRequestException, UseFilters } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-@UseFilters(BadRequestException)
+//@UseFilters(BadRequestException)
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
