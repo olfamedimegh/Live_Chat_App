@@ -10,7 +10,12 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
-  }
+    children: [
+      {
+        path: "/chatrooms/:id",
+      },
+    ],
+  },
 ])
 
 
