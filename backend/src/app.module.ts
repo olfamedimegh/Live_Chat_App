@@ -11,6 +11,7 @@ import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { TokenService } from './token/token.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ChatroomModule } from './chatroom/chatroom.module';
+import { LiveChatroomModule } from './live-chatroom/live-chatroom.module';
 
 const pubSub = new RedisPubSub({
   connection: {
@@ -71,6 +72,7 @@ const pubSub = new RedisPubSub({
       isGlobal: true,
     }),
     ChatroomModule,
+    LiveChatroomModule,
   ],
   controllers: [AppController],
   providers: [AppService, TokenService],
