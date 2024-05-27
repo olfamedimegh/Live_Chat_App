@@ -1,5 +1,5 @@
 import React from "react"
-import MainLayout from "../layouts/MainLayout"
+import MainLayout from "../layouts/Mainlayout"
 import Sidebar from "../components/Sidebar"
 import ProtectedRoutes from "../components/ProtectedRoutes"
 import AuthOverlay from "../components/AuthOverlay"

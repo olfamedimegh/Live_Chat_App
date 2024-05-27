@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import ChatWindow from "./Chatwindow"
+import ChatWindow from "./ChatWindow"
 import { Flex, Text } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 
