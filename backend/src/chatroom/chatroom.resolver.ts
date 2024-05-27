@@ -20,7 +20,7 @@ import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 
 @Resolver()
 export class ChatroomResolver {
-  public pubSub: PubSub;
+   public pubSub: PubSub;
   constructor(
     private readonly chatroomService: ChatroomService,
     private readonly userService: UserService,
