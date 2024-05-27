@@ -27,6 +27,26 @@ This project involves developing a real-time chat application with advanced feat
 - **Real-Time Responsiveness:** Event-driven APIs are essential for managing real-time updates of online users in chatrooms. By using Redis to store active users and publish events when users join or leave a room, we can maintain a synchronized and up-to-date view of online users.
 - **Scalability and Load Management:** Events can be processed asynchronously, which helps in better handling traffic spikes and load, crucial for a real-time chat application with potentially many active users simultaneously.
 
+## Running instructions:
+
+```sh
+#install the dependencies:
+cd frontend
+npm install
+cd ../backend
+npm install
+#start the docker container (contains the databases):
+sudo docker compose -f docker-compose.yml up
+#In a separate terminal instance, start the backend:
+cd backend
+npm run start
+#in a separate terminal instance, start the frontend:
+cd frontend
+npm run dev
+```
+
+Connect to the app on http://localhost:5173
+
 ## Demo Video :
 https://drive.google.com/file/d/1wEU5xxyc8qQgX47AqttsSr6GVAnF5hqE/view?usp=drive_link
 
