@@ -55,6 +55,8 @@ export type Mutation = {
   addUsersToChatroom: Chatroom;
   createChatroom: Chatroom;
   deleteChatroom: Scalars['String']['output'];
+  enterChatroom: Scalars['Boolean']['output'];
+  leaveChatroom: Scalars['Boolean']['output'];
   login: LoginResponse;
   logout: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
@@ -78,6 +80,16 @@ export type MutationCreateChatroomArgs = {
 
 
 export type MutationDeleteChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationEnterChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationLeaveChatroomArgs = {
   chatroomId: Scalars['Float']['input'];
 };
 
@@ -157,9 +169,15 @@ export type RegisterResponse = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  liveUsersInChatroom?: Maybe<Array<User>>;
   newMessage?: Maybe<Message>;
   userStartedTyping?: Maybe<User>;
   userStoppedTyping?: Maybe<User>;
+};
+
+
+export type SubscriptionLiveUsersInChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
 };
 
 
@@ -239,6 +257,8 @@ export type Mutation = {
   addUsersToChatroom: Chatroom;
   createChatroom: Chatroom;
   deleteChatroom: Scalars['String']['output'];
+  enterChatroom: Scalars['Boolean']['output'];
+  leaveChatroom: Scalars['Boolean']['output'];
   login: LoginResponse;
   logout: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
@@ -262,6 +282,16 @@ export type MutationCreateChatroomArgs = {
 
 
 export type MutationDeleteChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationEnterChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
+};
+
+
+export type MutationLeaveChatroomArgs = {
   chatroomId: Scalars['Float']['input'];
 };
 
@@ -341,9 +371,15 @@ export type RegisterResponse = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  liveUsersInChatroom?: Maybe<Array<User>>;
   newMessage?: Maybe<Message>;
   userStartedTyping?: Maybe<User>;
   userStoppedTyping?: Maybe<User>;
+};
+
+
+export type SubscriptionLiveUsersInChatroomArgs = {
+  chatroomId: Scalars['Float']['input'];
 };
 
 
